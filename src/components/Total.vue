@@ -9,17 +9,7 @@
             <v-avatar left>
                 <v-icon>mdi-plus</v-icon>
             </v-avatar>
-            {{ totalIncome }} $
-        </v-chip>
-        <v-chip
-                class="ma-2 font-weight-light"
-                color="indigo"
-                outlined
-        >
-            <v-avatar left>
-                <v-icon>mdi-plus</v-icon>
-            </v-avatar>
-            {{ (totalIncome*currency.buyRate).toFixed(0) }} BYN
+            {{ totalIncome }}$ ({{ (totalIncome*currency.buyRate).toFixed(0) }} BYN)
         </v-chip>
         <v-chip
                 class="ma-2"
@@ -27,7 +17,7 @@
                 text-color="white"
         >
             <v-icon left>mdi-minus</v-icon>
-            {{ totalExpenses }} $
+            {{ totalExpenses }}$ ({{ (totalExpenses*currency.buyRate).toFixed(0) }} BYN)
         </v-chip>
 
         <v-chip
@@ -38,20 +28,30 @@
             <v-avatar left>
                 <v-icon>mdi-checkbox-marked-circle</v-icon>
             </v-avatar>
-            {{ totalIncome - totalExpenses }} $
+            {{ totalIncome - totalExpenses }}$ ({{ ((totalIncome - totalExpenses)*currency.buyRate).toFixed(0) }} BYN)
+        </v-chip>
+        <v-chip
+                class="ma-2 font-weight-light"
+                color="indigo"
+                outlined
+        >
+            <v-avatar left>
+                <v-icon>mdi-sine-wave</v-icon>
+            </v-avatar>
+            {{ totalAverage }}$ ({{ ((totalAverage)*currency.buyRate).toFixed(0) }} BYN)
         </v-chip>
     </div>
 </template>
 <script>
+
     export default {
-        props: ['payments'],
+        currentUser: {},
+        props: ['payments', 'currency', 'date'],
         data() {
             return {
-                currency: {}
             }
         },
         mounted() {
-            this.getCurrency()
         },
         computed: {
             totalIncome() {
@@ -71,23 +71,20 @@
                     }
                 });
                 return total
+            },
+            totalAverage() {
+                let total = 0
+                this.payments.forEach(val => {
+                    if(val.paymentType) {
+                        total += Number(val.sum)
+                    }
+                });
+                const currentMonth = new Date(Date.parse(this.date)).getMonth()+1
+                return (total/currentMonth).toFixed(0)
             }
         },
         methods: {
-            async getCurrency() {
-                console.log('get currency')
-                const axios = require('axios')
-                    axios
-                        .get('https://developerhub.alfabank.by:8273/partner/1.0.0/public/rates')
-                        .then(response => {
-                            if(response.data) {
-                                this.currency = response.data.rates.filter( (rate) => rate.sellCode==840 && rate.buyCode == 933)
-                                this.currency = this.currency[0]
-                                //console.log(this.currency)
-                            }
-                        })
-                        .catch(error => console.log(error))
-            }
+
         }
     }
 </script>

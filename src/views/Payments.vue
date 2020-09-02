@@ -3,6 +3,13 @@
         <v-card class="my-2 pa-3">
             <v-row align="center">
                 <v-col class="d-flex" cols="12" sm="3">
+                    <v-checkbox
+                            v-model="fullYear"
+                            label="From start of the year"
+                            @click="getPayments"
+                    ></v-checkbox>
+                </v-col>
+                <v-col class="d-flex" cols="12" sm="3">
                     <v-dialog
                             ref="dialog"
                             v-model="modal"
@@ -42,6 +49,7 @@
                                     }"
                     sort-by="date"
                     class="elevation-1"
+                    mobile-breakpoint="350"
             >
                 <template v-slot:item.sum="{ item }">
                     <div class="font-weight-bold text-right">{{ item.sum | sumType(item.paymentType) }}</div>
@@ -57,9 +65,14 @@
             </v-data-table>
             <Total
                    :payments = "payments"
+                   :currency = "currency"
+                   :date = "date"
             />
         </div>
-        <AddPayment @add-payment="addPayment"/>
+        <AddPayment
+                @add-payment="addPayment"
+                :currency = "currency"
+        />
     </v-container>
 </template>
 <script>
@@ -79,7 +92,7 @@
                     {text: 'date', value: 'date'},
                     {text: 'Sum', value: 'sum'},
                     {text: 'Title', value: 'title'},
-                    {text: 'Currency', value: 'currency'},
+                    //{text: 'Currency', value: 'currency'},
                     {text: 'Action', value: 'action'}
                 ],
                 payments: [],
@@ -88,11 +101,14 @@
                 menu: false,
                 modal: false,
                 editItem: {},
-                editDialog: false
+                editDialog: false,
+                currency: {},
+                fullYear: false
             }
         },
         mounted() {
             this.getPayments()
+            this.getCurrency()
         },
         filters: {
             sumType(sum, type) {
@@ -109,7 +125,13 @@
                 try{
                     this.currentUser = await firebase.auth().currentUser
                     if(this.currentUser) {
-                        const startDate = this.date
+                        let startDate = '';
+                        if(this.fullYear){
+                            const startOfTheYear = new Date().getFullYear()
+                            startDate = startOfTheYear+'-01-01'
+                        } else {
+                            startDate  = this.date
+                        }
                         const endDate = this.date+this.daysInMonth(this.date)
                         const dbdata = (await firebase.database().ref().child(`payments/${this.currentUser.uid}`).orderByChild("date").startAt(startDate).endAt(endDate).once('value')).val()
                         this.payments = []
@@ -165,6 +187,20 @@
                     this.loading = false
                     console.log(e.message)
                 }
+            },
+            async getCurrency() {
+                console.log('get currency')
+                const axios = require('axios')
+                axios
+                    .get('https://developerhub.alfabank.by:8273/partner/1.0.0/public/rates')
+                    .then(response => {
+                        if(response.data) {
+                            this.currency = response.data.rates.filter( (rate) => rate.sellCode==840 && rate.buyCode == 933)
+                            this.currency = this.currency[0]
+                            //console.log(this.currency)
+                        }
+                    })
+                    .catch(error => console.log(error))
             },
             daysInMonth(date) {
                 date = new Date(date);

@@ -48,6 +48,11 @@
                                 v-model="title"
                                 :rules="titleRules"
                         ></v-text-field>
+                        <v-select
+                                v-model="currencyName"
+                                :items="currencyNames"
+                                label="Currency"
+                        ></v-select>
                         <v-text-field
                                 label="Sum"
                                 requiered
@@ -73,7 +78,7 @@
 <script>
 
     export default {
-        props: [],
+        props: ['currency'],
         data() {
             return {
                 add: false,
@@ -88,12 +93,17 @@
                 ],
                 paymentType: true,
                 addDialog: false,
-                valid: false
+                valid: false,
+                currencyName: 'USD',
+                currencyNames: ['USD', 'BYN'],
             }
         },
         methods: {
             onSubmit() {
                 if(this.title.trim()){
+                    if(this.currencyName==='BYN') {
+                        this.sum = (this.sum/this.currency.buyRate).toFixed(0)
+                    }
                     const payment = {
                         title: this.title,
                         date: this.date,

@@ -25,7 +25,7 @@
                     ></v-text-field>
                     <v-btn
                             :disabled="!valid"
-                            @click="login">Вход</v-btn>
+                            @click="login">Login</v-btn>
                 </v-form>
             </v-card-text>
         </v-card>
@@ -39,7 +39,7 @@ export default {
     data() {
         return {
             valid: true,
-            email: '',
+            email: 'ilovefiniki@gmail.com',
             emailRules: [
                 v => !!v || 'E-mail is required',
                 v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
