@@ -1,0 +1,31 @@
+{
+  "name": "Finiki Finance",
+  "short_name": "Finiki Finance",
+  "description": "Progressive Web App Finiki Finance",
+  "icons": [
+    {
+      "src": "icons/appstore.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/playstore.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+        "src": "icons/64.png",
+        "sizes": "64x64",
+        "type": "image/png"
+    },
+    {
+        "src": "icons/32.png",
+        "sizes": "32x32",
+        "type": "image/png"
+    }
+  ],
+  "start_url": "https://finance.ilovefiniki.com/",
+  "display": "standalone",
+  "theme_color": "#1976d2",
+  "background_color": "#1976d2"
+}
