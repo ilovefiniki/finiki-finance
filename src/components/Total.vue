@@ -34,6 +34,7 @@
                 class="ma-2 font-weight-light"
                 color="indigo"
                 outlined
+                v-if="fullYear"
         >
             <v-avatar left>
                 <v-icon>mdi-sine-wave</v-icon>
@@ -46,7 +47,7 @@
 
     export default {
         currentUser: {},
-        props: ['payments', 'currency', 'date'],
+        props: ['payments', 'currency', 'date', 'fullYear'],
         data() {
             return {
             }

@@ -67,6 +67,7 @@
                    :payments = "payments"
                    :currency = "currency"
                    :date = "date"
+                   :full-year = "fullYear"
             />
         </div>
         <AddPayment
@@ -127,7 +128,7 @@
                     if(this.currentUser) {
                         let startDate = '';
                         if(this.fullYear){
-                            const startOfTheYear = new Date().getFullYear()
+                            const startOfTheYear = new Date(Date.parse(this.date)).getFullYear()
                             startDate = startOfTheYear+'-01-01'
                         } else {
                             startDate  = this.date

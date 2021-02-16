@@ -1,28 +1,12 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-      absolute
-    >
-      <v-btn icon tile to="/">
-        <v-icon>mdi-home</v-icon>
-      </v-btn>
-      <v-toolbar-title>Finiki Finance</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn icon tile to="/login">
-        <v-icon>mdi-login</v-icon>
-      </v-btn>
-      <v-btn icon tile to="/logout">
-        <v-icon>mdi-logout</v-icon>
-      </v-btn>
-    </v-app-bar>
+
+<Header/>
 
     <v-main>
       <v-img
               class="fill-height"
-              src="https://picsum.photos/id/1025/1920/1080"
+              src="bg.jpg"
       >
         <v-row
                 align="center"
@@ -35,11 +19,21 @@
     </v-main>
   </v-app>
 </template>
+<style>
+  .v-responsive__content {
+    background: #ffffff38;
+  }
+</style>
 <script>
+  import Header from '@/components/Header'
+
 export default {
   name: 'App',
   data: () => ({
     //
   }),
+  components: {
+    Header
+  }
 };
 </script>
