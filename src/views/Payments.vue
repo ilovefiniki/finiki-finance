@@ -54,6 +54,9 @@
                 <template v-slot:item.sum="{ item }">
                     <div class="font-weight-bold text-right">{{ item.sum | sumType(item.paymentType) }}</div>
                 </template>
+                <template v-slot:item.netto="{ item }">
+                    <div class="font-weight-bold text-right">{{ item.sum | nettoSum(item.paymentType, item.tax) }}</div>
+                </template>
                 <template v-slot:item.action="{ item }">
                     <EditPayment
                             :payment="item"
@@ -72,7 +75,7 @@
         </div>
         <AddPayment
                 @add-payment="addPayment"
-                :currency = "currency"
+                :currencies = "currencies"
         />
     </v-container>
 </template>
@@ -91,9 +94,9 @@
                 currentUser: {},
                 headers: [
                     {text: 'date', value: 'date'},
-                    {text: 'Sum', value: 'sum'},
+                    {text: 'Brutto', value: 'sum'},
+                    {text: 'Netto', value: 'netto'},
                     {text: 'Title', value: 'title'},
-                    //{text: 'Currency', value: 'currency'},
                     {text: 'Action', value: 'action'}
                 ],
                 payments: [],
@@ -104,6 +107,7 @@
                 editItem: {},
                 editDialog: false,
                 currency: {},
+                currencies: {},
                 fullYear: false
             }
         },
@@ -119,6 +123,18 @@
                 } else {
                     return '+'+sum
                 }
+            },
+            nettoSum(sum, type, tax) {
+                if(!type) {
+                    return '-'
+                } else {
+                    if(!tax){
+                        tax=0;
+                    }
+                    const result = sum*(100-tax)/100;
+                    return '+'+result.toFixed(0)
+                }
+
             }
         },
         methods: {
@@ -196,6 +212,7 @@
                     .get('https://developerhub.alfabank.by:8273/partner/1.0.0/public/rates')
                     .then(response => {
                         if(response.data) {
+                            this.currencies = response.data.rates
                             this.currency = response.data.rates.filter( (rate) => rate.sellCode==840 && rate.buyCode == 933)
                             this.currency = this.currency[0]
                             //console.log(this.currency)

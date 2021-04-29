@@ -61,6 +61,14 @@
                                 v-model="sum"
                                 :rules="sumRules"
                         ></v-text-field>
+                        <v-text-field
+                                label="tax %"
+                                requiered
+                                outlined
+                                type="text"
+                                v-model="tax"
+                                :rules="sumRules"
+                        ></v-text-field>
                         <v-switch
                                 v-model="paymentType"
                                 label="Income/Expenses"
@@ -78,7 +86,7 @@
 <script>
 
     export default {
-        props: ['currency'],
+        props: ['currencies'],
         data() {
             return {
                 add: false,
@@ -88,6 +96,7 @@
                     v => !!v || 'is required'
                 ],
                 sum: 1,
+                tax: [],
                 sumRules: [
                     v => !!v || 'is required'
                 ],
@@ -95,19 +104,27 @@
                 addDialog: false,
                 valid: false,
                 currencyName: 'USD',
-                currencyNames: ['USD', 'BYN'],
+                currencyNames: ['USD', 'BYN', 'RUB', 'EUR'],
             }
         },
         methods: {
             onSubmit() {
                 if(this.title.trim()){
                     if(this.currencyName==='BYN') {
-                        this.sum = (this.sum/this.currency.buyRate).toFixed(0)
+                        const currency = this.currencies.filter( (rate) => rate.sellCode==840 && rate.buyCode == 933)
+                        this.sum = (this.sum/currency[0].buyRate/currency[0].quantity).toFixed(0)
+                    } else if(this.currencyName==='RUB') {
+                        const currency = this.currencies.filter( (rate) => rate.sellCode==840 && rate.buyCode == 643)
+                        this.sum = (this.sum/currency[0].buyRate/currency[0].quantity).toFixed(0)
+                    } else if(this.currencyName==='EUR') {
+                        const currency = this.currencies.filter( (rate) => rate.sellCode==978 && rate.buyCode == 840)
+                        this.sum = (this.sum*currency[0].sellRate/currency[0].quantity).toFixed(0)
                     }
                     const payment = {
                         title: this.title,
                         date: this.date,
                         sum: this.sum,
+                        tax: this.tax,
                         currency: 'USD',
                         id: Date.now(),
                         paymentType: this.paymentType

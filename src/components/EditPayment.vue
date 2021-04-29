@@ -51,6 +51,14 @@
                             v-model="payment.sum"
                             :rules="sumRules"
                     ></v-text-field>
+                    <v-text-field
+                            label="tax %"
+                            requiered
+                            outlined
+                            type="text"
+                            v-model="payment.tax"
+                            :rules="sumRules"
+                    ></v-text-field>
                     <v-switch
                             v-model="payment.paymentType"
                             label="Income/Expenses"
@@ -78,6 +86,7 @@
                     v => !!v || 'is required'
                 ],
                 sum: 1,
+                tax: 0,
                 sumRules: [
                     v => !!v || 'is required'
                 ],

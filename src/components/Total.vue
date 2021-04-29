@@ -6,10 +6,14 @@
                 color="indigo"
                 text-color="white"
         >
-            <v-avatar left>
-                <v-icon>mdi-plus</v-icon>
-            </v-avatar>
-            {{ totalIncome }}$ ({{ (totalIncome*currency.buyRate).toFixed(0) }} BYN)
+            Brutto {{ totalIncome }}$ ({{ (totalIncome*currency.buyRate).toFixed(0) }} BYN)
+        </v-chip>
+        <v-chip
+                class="ma-2 font-weight-bold"
+                color="indigo"
+                text-color="white"
+        >
+            Netto {{ totalNetto.toFixed(0) }}$ ({{ (totalNetto*currency.buyRate).toFixed(0) }} BYN)
         </v-chip>
         <v-chip
                 class="ma-2"
@@ -25,10 +29,7 @@
                 color="primary"
                 text-color="white"
         >
-            <v-avatar left>
-                <v-icon>mdi-checkbox-marked-circle</v-icon>
-            </v-avatar>
-            {{ totalIncome - totalExpenses }}$ ({{ ((totalIncome - totalExpenses)*currency.buyRate).toFixed(0) }} BYN)
+         Profit: {{ (totalNetto - totalExpenses).toFixed(0) }}$ ({{ ((totalIncome - totalExpenses)*currency.buyRate).toFixed(0) }} BYN)
         </v-chip>
         <v-chip
                 class="ma-2 font-weight-light"
@@ -60,6 +61,18 @@
                 this.payments.forEach(val => {
                     if(val.paymentType) {
                         total += Number(val.sum)
+                    }
+                });
+                return total
+            },
+            totalNetto() {
+                let total = 0
+                this.payments.forEach(val => {
+                    if(val.paymentType) {
+                        if(!val.tax){
+                            val.tax=0;
+                        }
+                        total += Number(val.sum*(100-val.tax)/100)
                     }
                 });
                 return total
