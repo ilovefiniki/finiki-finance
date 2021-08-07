@@ -29,7 +29,7 @@
                 color="primary"
                 text-color="white"
         >
-         Profit: {{ (totalNetto - totalExpenses).toFixed(0) }}$ ({{ ((totalIncome - totalExpenses)*currency.buyRate).toFixed(0) }} BYN)
+         Profit: {{ (totalNetto - totalExpenses).toFixed(0) }}$ ({{ ((totalNetto - totalExpenses)*currency.buyRate).toFixed(0) }} BYN)
         </v-chip>
         <v-chip
                 class="ma-2 font-weight-light"
